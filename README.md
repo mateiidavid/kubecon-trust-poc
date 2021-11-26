@@ -53,4 +53,21 @@ __(@matei)__: how else can we use `trust`? Are there any other cool things we
 can do that I'm missing?
 
 
+### Linkerd w/ Trust
+---
+
+In the manifests directory, we have three files, which should be applied in order:
+
+1. [self-signed-ca](manifests/linkerd-trust/self-signed-ca.yaml) will create a
+   self-signed issuer/CA that we can use to sign our Linkerd trust anchor. We
+   then create an issuer from the trust anchor.
+2. [issuer-certificate](manifests/linkerd-trust/issuer-certificate.yaml) will
+   create the `linkerd` namespace and create an identity issuer certificate
+   signed by the trust.
+3. [trust-bundle](manifests/linkerd-trust/trust-bundle.yaml) will create a
+   `trust` `Bundle` object that will distribute our root CA as a configmap in
+   every namespace in the cluster. We can use the configmap to install Linkerd
+   with the CA (__Note__: Linkerd cannot pull the root out of a `Secret` for
+   security reasons; to have an automated way of installing Linkerd without
+   manually passing in the CA, we need to create the ConfigMap).
 
